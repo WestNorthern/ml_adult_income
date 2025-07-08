@@ -1,0 +1,10 @@
+# ── docker-compose.yml ──
+version: "3.8"
+services:
+  notebook:
+    build: .
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./src:/home/jovyan/project/src
+      - ./data:/home/jovyan/project/data
