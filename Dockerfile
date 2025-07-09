@@ -1,3 +1,4 @@
+# Use the Jupyter “datascience” stack (includes conda, Python, common DS libs)
 FROM jupyter/datascience-notebook:latest
 
 # 1) Become root so we can install & set perms
@@ -9,14 +10,27 @@ RUN mamba env update -n base -f /tmp/environment.yml \
  && rm /tmp/environment.yml \
  && fix-permissions /home/jovyan
 
-# 3) Switch back to the jovyan user
+# 3) Copy your project into the container
+#    (COPY always runs as root to preserve permissions)
+COPY . /home/jovyan/project
+
+# 4) Ensure jovyan owns the project files so pip can write egg-info
+RUN chown -R jovyan:users /home/jovyan/project
+
+# 5) Install the project in editable mode (creates egg-info under project)
+RUN pip install --no-cache-dir -e /home/jovyan/project
+
+# 6) Switch to non-root user for running JupyterLab
 USER jovyan
 
-# 4) Bring in your project and set the workdir
-COPY . /home/jovyan/project
+# 7) Set working directory
 WORKDIR /home/jovyan/project
 
+# 8) Make src importable without pip by adding to PYTHONPATH
+ENV PYTHONPATH="/home/jovyan/project/src:${PYTHONPATH}"
+
+# 9) Expose JupyterLab port
 EXPOSE 8888
 
-# 5) Start JupyterLab
+# 10) Start JupyterLab on container launch
 CMD ["start.sh", "jupyter", "lab", "--LabApp.token=''", "--LabApp.allow_origin='*'"]
