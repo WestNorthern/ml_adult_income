@@ -1,5 +1,8 @@
 ## Adult Income Prediction & Fairness Analysis
 
+**Note to Study.com graders**
+The data is being retrieved from openml directly, so we shouldn't need to include the CSV in this project. But I thought perhaps you might need to run this without connecting to the internet,  so  I will try to have that CSV added to the project this evening.
+
 This repository contains a complete machine learning pipeline for the UCI Adult Income dataset, with a focus on bias detection and fairness evaluation. It is fully containerized using Docker, so you can run everything locally without installing Python or dependencies directly on your machine.
 
 ### Prerequisites
